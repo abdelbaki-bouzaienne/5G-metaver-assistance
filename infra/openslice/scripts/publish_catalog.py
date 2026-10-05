@@ -54,16 +54,21 @@ class OpenSlice:
             self._login()
 
     def _login(self):
-        r = self.s.post(
-            self.cfg["oauth_token_url"],
-            data={
-                "grant_type": "password",
-                "client_id": self.cfg["oauth_client_id"],
-                "username": self.cfg["username"],
-                "password": self.cfg["password"],
-            },
-            timeout=30,
-        )
+        import os as _os
+        password = self.cfg.get("password") or _os.environ.get(
+            self.cfg.get("password_env", "OPENSLICE_PASSWORD"), "")
+        if not password:
+            sys.exit("Mot de passe OpenSlice manquant : renseigner 'password' dans env.json "
+                     f"ou exporter {self.cfg.get('password_env', 'OPENSLICE_PASSWORD')}.")
+        data = {
+            "grant_type": "password",
+            "client_id": self.cfg["oauth_client_id"],
+            "username": self.cfg["username"],
+            "password": password,
+        }
+        if self.cfg.get("oauth_client_secret"):
+            data["client_secret"] = self.cfg["oauth_client_secret"]
+        r = self.s.post(self.cfg["oauth_token_url"], data=data, timeout=30)
         r.raise_for_status()
         self.s.headers["Authorization"] = "Bearer " + r.json()["access_token"]
 

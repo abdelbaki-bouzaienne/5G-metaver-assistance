@@ -11,10 +11,20 @@ SR-TE délai minimal, protection TI-LFA (2 chemins disjoints), QoS 5QI → DSCP.
 | `metaverse-n6n4-edge-core` | [d2, d3] | PE-EDGE ⇄ PE-CORE | N6/N4 : vidéo, avatars, supervision, SMF↔UPF | **à créer — 3ᵉ slice** (doc 2 §7.6) |
 
 ```bash
-cp scripts/env.sh.example scripts/env.sh    # éditer NSC_URL + IP des CE
-./scripts/create_transport_slices.sh        # POST /network-slices ×3
+# TRANSPORT_CONTROLLER=none sur le banc : démarrer d'abord le stub inventaire
+python3 stub/nsc_stub.py --port 8079 --inventory /var/lib/nsc/inventory.json &
+
+./scripts/create_transport_slices.sh        # POST /network-slices ×3 (stub ou vrai NSC)
 ./scripts/verify_transport_slices.sh        # état + iperf3 + RTT + test d'isolation
 ```
+
+**Stub NSC (V1/V2)** : `stub/nsc_stub.py` implémente la même API que le contrôleur du banc
+mais ne configure aucun PE — il consigne l'intention exacte (slice, sdps, SLO) dans un
+inventaire JSON et répond `ESTABLISHED`. La chaîne OpenSlice (RFS → AVAILABLE) fonctionne
+donc dès maintenant ; au raccordement du vrai contrôleur V3, pointer `NSC_URL` dessus et
+rejouer `create_transport_slices.sh` (les payloads sont identiques). Les mesures
+iperf3/RTT de `verify_transport_slices.sh` restent valides (elles passent par les CE,
+pas par le contrôleur) mais ne reflètent une politique de slice qu'avec le vrai NSC.
 
 Notes :
 - En nominal ces slices sont créés par OpenSlice à l'instanciation de `RFS_Transport_InterSite`

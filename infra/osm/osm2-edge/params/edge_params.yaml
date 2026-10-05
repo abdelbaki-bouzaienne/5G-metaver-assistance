@@ -20,9 +20,9 @@ additionalParamsForVnf:
       public_ip: "10.0.6.20"
 vld:
   - name: mgmtnet
-    vim-network-name: mgmt
+    vim-network-name: internal5G
   - name: n3net
-    vim-network-name: n3net
+    vim-network-name: 5g-inter-vm   # dedier n3net quand cree dans le VIM
     vnfd-connection-point-ref:
       - member-vnf-index-ref: upf-edge
         vnfd-connection-point-ref: n3-ext
@@ -31,7 +31,7 @@ vld:
         vnfd-connection-point-ref: n3-ext
         ip-address: 10.0.3.11
   - name: n4net
-    vim-network-name: n4net
+    vim-network-name: 5g-inter-vm   # dedier n4net quand cree dans le VIM
     vnfd-connection-point-ref:
       - member-vnf-index-ref: upf-edge
         vnfd-connection-point-ref: n4-ext
@@ -40,7 +40,7 @@ vld:
         vnfd-connection-point-ref: n4-ext
         ip-address: 10.0.4.11
   - name: n6net
-    vim-network-name: n6net
+    vim-network-name: 5g-inter-vm   # dedier n6net quand cree dans le VIM
     vnfd-connection-point-ref:
       - member-vnf-index-ref: edge-platform
         vnfd-connection-point-ref: n6-ext

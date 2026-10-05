@@ -16,6 +16,20 @@ variables jour-1 via `additionalParamsForVnf`).
 | `open5gs_core_knf` / `core_5g_knf_ns` | KNF/NS | osm3 | Alternative Helm (chart Gradiant `open5gs`) sur le cluster Sylva `wc-5g-core2` |
 | `nst/*.yaml` | NST | tous | Templates de slice OSM (optionnels, tests intra-domaine) |
 
+## Configuration banc (valeurs fournies)
+
+- OSM : `nbi.10.0.3.8.nip.io` (osm1/VIM `osm-p1`), `nbi.10.0.3.9.nip.io` (osm2/`osm-p2`),
+  **osm3 à confirmer** (`osm-p3`) — voir `scripts/env.sh`.
+- Réseaux : gestion = `internal5G` ; données = `5g-inter-vm` **partagé** tant que
+  `n2net`/`n3net`/`n6net` ne sont pas créés dans les VIM. ⚠ Avec un seul réseau de
+  données, les IP fixes 10.0.2.x/10.0.3.x/10.0.4.x/10.0.6.x des `params/*.yaml` doivent
+  être adaptées au subnet réel de `5g-inter-vm` (inventaire OpenStack), ou les champs
+  `ip-address` supprimés pour laisser le DHCP attribuer — puis reporter les IP obtenues
+  dans les `additionalParams` (amf_ip, upf_*_n4, …).
+- **Convention SD** : `decimal` côté catalogue/API TMF (657502 / 791515) ;
+  côté **déploiement Helm OSM (KNF)**, le chart attend l'hexadécimal :
+  `657502 = 0x0A085E`, `791515 = 0x0C13DB` (champ 24 bits).
+
 ## Plan d'adressage par défaut (modifiable dans `*/params/*.yaml`)
 
 | Réseau VIM | Usage | IPs |

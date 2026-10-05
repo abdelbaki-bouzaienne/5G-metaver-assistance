@@ -54,17 +54,20 @@
 | Session collaborative Quest + iPad (avatars, tracés, vidéo) | Vision Pro, Galaxy XR, avatars spatiaux (F4), RGB-D |
 | Scénarios conformité globale / client / câblage (modèle de données + API) | Détection automatique d'écarts entre scans |
 
-## 4. Questions ouvertes (à confirmer, valeurs par défaut utilisées en attendant)
+## 4. Questions ouvertes — RÉPONSES REÇUES (2026-10-05)
 
-1. **Accès** : URLs/identifiants des 3 OSM (NBI :9999), d'OpenSlice (portail + Keycloak) et du
-   contrôleur de transport → à renseigner dans `infra/osm/scripts/env.sh` et
-   `infra/openslice/scripts/env.example.json`.
-2. **Convention du SD** dans l'API du cœur/OSM : décimale (657502) ou hexadécimale (0x0A08DE) ?
-   Le dépôt utilise la décimale partout, avec un commentaire là où c'est à vérifier.
-3. **GPU au MEC** : un nœud GPU est-il disponible pour `gs-pipeline` (sinon mode mock) ?
-4. **Unity Relay** : avez-vous un compte Unity Gaming Services, ou TURN seul en V1 ?
-5. **Référentiel ports/câbles/clients** : import d'un inventaire existant ou création par
-   marquage dans le jumeau ? (`twin-service` supporte les deux : endpoint d'import CSV/JSON
-   et création via annotations.)
-6. **Images cloud** : le nom de l'image Ubuntu 22.04 dans chaque VIM OpenStack
-   (par défaut `ubuntu-22.04`) et les noms des réseaux provider (`mgmt`, `n2net`, `n3net`, `n6net`).
+| # | Question | Réponse | Appliqué dans |
+|---|---|---|---|
+| 1 | Accès OSM | OSM1 `nbi.10.0.3.8.nip.io` (VIM `osm-p1`), OSM2 `nbi.10.0.3.9.nip.io` (`osm-p2`), **OSM3 : à confirmer** (`osm-p3`) — OSM2 indiqué deux fois dans la réponse | `infra/osm/scripts/env.sh` |
+| 1b | Accès OpenSlice | UI `http://10.0.3.7/`, API `http://10.0.3.7:13082/tmf-api`, Keycloak `http://10.0.3.7/auth/realms/openslice/...`, client `osapiWebClientId`/`secret`, user `admin` (mot de passe **non commité** : exporter `OPENSLICE_PASSWORD` avant `publish_catalog.py`) | `infra/openslice/scripts/env.json` |
+| 2 | Convention SD | `decimal` côté catalogue/API TMF ; **hexadécimal côté Helm OSM** : 657502=`0A085E`, 791515=`0C13DB` | README OSM + descripteur KNF |
+| 3 | GPU au MEC | `GPU_MEC=mock` jusqu'à preuve d'un nœud GPU | défaut `GS_MODE=mock` inchangé |
+| 4 | Unity Relay | `off` — V1 = TURN uniquement | défaut `UNITY_RELAY_ENABLED=false` inchangé |
+| 5 | Référentiel | `TWIN_INVENTORY=import` depuis `infrastructure-inventory` | `apps/twin-service/inventory/` (exemple + commande d'import vers `POST /twin/import`) |
+| 6 | Images/réseaux | image `ubuntu-22.04` ; gestion `internal5G` ; données **`5g-inter-vm` partagé** (n2net/n3net/n6net à créer plus tard, cf. inventaire OpenStack) — ⚠ adapter les IP fixes des `params/*.yaml` au subnet réel | `params/*.yaml` + README OSM |
+| 7 | Contrôleur transport | `TRANSPORT_CONTROLLER=none` → **stub NSC à inventaire** fourni (`infra/transport/stub/nsc_stub.py`), même API ; intention rejouable telle quelle sur le vrai contrôleur V3 | `infra/transport/` |
+
+### Reste à confirmer
+- Hostname NBI d'**OSM3** (seul manquant).
+- Subnet réel de `5g-inter-vm` pour fixer (ou laisser en DHCP) les IP N2/N3/N4/N6 des
+  `params/*.yaml`, et IP des CE (`infra/transport/scripts/env.sh`).
