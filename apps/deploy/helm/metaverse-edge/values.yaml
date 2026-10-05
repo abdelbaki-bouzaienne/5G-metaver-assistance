@@ -34,7 +34,7 @@ apps:
   twin-service:
     port: 8001
     env:
-      DATABASE_URL: postgresql://twin:twin@postgres:5432/twin
+      DATABASE_URL: postgresql+psycopg2://twin:twin@postgres:5432/twin
   scan-ingest:
     port: 8002
     env:

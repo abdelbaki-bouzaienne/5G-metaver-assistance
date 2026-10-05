@@ -30,7 +30,9 @@ MAX_RETRIES = int(os.environ.get("GS_MAX_RETRIES", "2"))
 MOCK_TRAIN_SECONDS = float(os.environ.get("GS_MOCK_SECONDS", "5"))
 DATA_DIR = os.environ.get("DATA_DIR", "/data")
 
-r = redis.Redis.from_url(REDIS_URL, decode_responses=True)
+# socket_timeout=None: redis-py 5+ defaults a socket timeout that aborts BLPOP
+# and would kill this daemon thread on the first empty wait.
+r = redis.Redis.from_url(REDIS_URL, decode_responses=True, socket_timeout=None)
 app = FastAPI(title="gs-pipeline", version="1.0.0")
 
 s3 = None
@@ -118,7 +120,10 @@ def process(job: dict):
 
 def worker():
     while True:
-        item = r.blpop("gs:jobs", timeout=5)
+        try:
+            item = r.blpop("gs:jobs", timeout=5)
+        except redis.exceptions.TimeoutError:
+            continue
         if item:
             process(json.loads(item[1]))
 
