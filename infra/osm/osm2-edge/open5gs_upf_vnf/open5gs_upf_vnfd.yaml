@@ -1,0 +1,85 @@
+vnfd:
+  id: open5gs_upf_vnf
+  product-name: open5gs_upf_vnf
+  description: >
+    UPF Open5GS deploye au MEC (d2 / PE-EDGE). Instancie deux fois dans edge_mec_ns :
+    upf-edge (DNN EDGE, slice eMBB 1:657502) et upf-act (DNN actuation, slice URLLC 2:791515,
+    isolation DEDICATED). Le DNN, le subnet UE et le S-NSSAI sont des parametres jour-1.
+  provider: fieldassist-poc
+  version: '1.0'
+  mgmt-cp: mgmt-ext
+  virtual-compute-desc:
+    - id: upf-compute
+      virtual-cpu:
+        num-virtual-cpu: 2
+      virtual-memory:
+        size: 4.0
+  virtual-storage-desc:
+    - id: upf-storage
+      size-of-storage: 20
+  sw-image-desc:
+    - id: ubuntu-22.04
+      name: ubuntu-22.04
+      image: ubuntu-22.04
+  vdu:
+    - id: upf-vdu
+      name: upf-vdu
+      cloud-init-file: upf-init.cfg
+      sw-image-desc: ubuntu-22.04
+      virtual-compute-desc: upf-compute
+      virtual-storage-desc:
+        - upf-storage
+      int-cpd:
+        - id: mgmt-int
+          virtual-network-interface-requirement:
+            - name: ens3
+              position: 1
+              virtual-interface:
+                type: PARAVIRT
+        - id: n3-int
+          virtual-network-interface-requirement:
+            - name: ens4
+              position: 2
+              virtual-interface:
+                type: PARAVIRT
+        - id: n4-int
+          virtual-network-interface-requirement:
+            - name: ens5
+              position: 3
+              virtual-interface:
+                type: PARAVIRT
+        - id: n6-int
+          virtual-network-interface-requirement:
+            - name: ens6
+              position: 4
+              virtual-interface:
+                type: PARAVIRT
+  ext-cpd:
+    - id: mgmt-ext
+      int-cpd:
+        vdu-id: upf-vdu
+        cpd: mgmt-int
+    - id: n3-ext
+      int-cpd:
+        vdu-id: upf-vdu
+        cpd: n3-int
+    - id: n4-ext
+      int-cpd:
+        vdu-id: upf-vdu
+        cpd: n4-int
+    - id: n6-ext
+      int-cpd:
+        vdu-id: upf-vdu
+        cpd: n6-int
+  df:
+    - id: default-df
+      vdu-profile:
+        - id: upf-vdu
+          min-number-of-instances: 1
+          max-number-of-instances: 1
+      instantiation-level:
+        - id: default-instantiation-level
+          vdu-level:
+            - vdu-id: upf-vdu
+              number-of-instances: 1
+      default-instantiation-level: default-instantiation-level

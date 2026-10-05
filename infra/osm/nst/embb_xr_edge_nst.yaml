@@ -1,0 +1,26 @@
+# Network Slice Template OSM (optionnel) - slice eMBB XR-Edge (SST 1, SD 657502)
+# Onboarding : osm nst-create embb_xr_edge_nst.yaml
+# Instanciation : osm nsi-create --nsi_name embb-xr --nst_name embb_xr_edge_nst --vim_account <VIM>
+# Remarque : chaque sous-reseau vit dans un OSM different sur le banc ; la composition
+# inter-OSM est faite par OpenSlice/OSOM (les NST servent aux tests intra-domaine).
+nst:
+  - id: embb_xr_edge_nst
+    name: embb_xr_edge_nst
+    SNSSAI-identifier:
+      slice-service-type: eMBB
+      slice-differentiator: 657502
+    quality-of-service:
+      id: 1
+    netslice-subnet:
+      - id: ran-subnet
+        is-shared-nss: false
+        description: Sous-reseau RAN (gNB UERANSIM, osm1)
+        nsd-ref: ran_xr_edge_ns
+      - id: edge-subnet
+        is-shared-nss: true
+        description: Sous-reseau MEC (UPF EDGE + plateforme, osm2)
+        nsd-ref: edge_mec_ns
+      - id: core-subnet
+        is-shared-nss: true
+        description: Sous-reseau coeur (plan de controle, osm3)
+        nsd-ref: core_5g_ns

@@ -1,0 +1,22 @@
+vnfd:
+  id: open5gs_core_knf
+  product-name: open5gs_core_knf
+  description: >
+    Alternative KNF : coeur 5G Open5GS deploye en Helm sur le cluster Sylva wc-5g-core2
+    (site central d3). Necessite l'enregistrement du cluster K8s dans osm3
+    (osm k8scluster-add) et le repo Helm Gradiant (https://gradiant.github.io/5g-charts).
+  provider: fieldassist-poc
+  version: '1.0'
+  mgmt-cp: mgmt-ext
+  kdu:
+    - name: open5gs-core
+      helm-chart: gradiant/open5gs
+      helm-version: v3
+  k8s-cluster:
+    nets:
+      - id: mgmtnet
+  ext-cpd:
+    - id: mgmt-ext
+      k8s-cluster-net: mgmtnet
+  df:
+    - id: default-df

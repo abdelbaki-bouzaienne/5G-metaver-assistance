@@ -1,0 +1,66 @@
+vnfd:
+  id: edge_platform_vnf
+  product-name: edge_platform_vnf
+  description: >
+    Plateforme edge (MEC, d2) : pile metavers (twin-service, scan-ingest, gs-pipeline,
+    session-service, signaling, MinIO, PostgreSQL, Redis, coturn) via docker compose,
+    plus l'application de substitution edge-video du banc. Alternative : deploiement
+    Kubernetes via CRIDGE avec le chart apps/deploy/helm/metaverse-edge.
+  provider: fieldassist-poc
+  version: '1.0'
+  mgmt-cp: mgmt-ext
+  virtual-compute-desc:
+    - id: edge-compute
+      virtual-cpu:
+        num-virtual-cpu: 4
+      virtual-memory:
+        size: 8.0
+  virtual-storage-desc:
+    - id: edge-storage
+      size-of-storage: 80
+  sw-image-desc:
+    - id: ubuntu-22.04
+      name: ubuntu-22.04
+      image: ubuntu-22.04
+  vdu:
+    - id: edge-vdu
+      name: edge-vdu
+      cloud-init-file: edge-init.cfg
+      sw-image-desc: ubuntu-22.04
+      virtual-compute-desc: edge-compute
+      virtual-storage-desc:
+        - edge-storage
+      int-cpd:
+        - id: mgmt-int
+          virtual-network-interface-requirement:
+            - name: ens3
+              position: 1
+              virtual-interface:
+                type: PARAVIRT
+        - id: n6-int
+          virtual-network-interface-requirement:
+            - name: ens4
+              position: 2
+              virtual-interface:
+                type: PARAVIRT
+  ext-cpd:
+    - id: mgmt-ext
+      int-cpd:
+        vdu-id: edge-vdu
+        cpd: mgmt-int
+    - id: n6-ext
+      int-cpd:
+        vdu-id: edge-vdu
+        cpd: n6-int
+  df:
+    - id: default-df
+      vdu-profile:
+        - id: edge-vdu
+          min-number-of-instances: 1
+          max-number-of-instances: 1
+      instantiation-level:
+        - id: default-instantiation-level
+          vdu-level:
+            - vdu-id: edge-vdu
+              number-of-instances: 1
+      default-instantiation-level: default-instantiation-level
