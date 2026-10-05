@@ -1,0 +1,27 @@
+{
+  "_type": "CustomerFacingServiceSpecification",
+  "_relationships": [
+    {"name": "CFS_eMBB_XR_Edge", "relationshipType": "bundled"},
+    {"name": "CFS_Transport_InterSite", "relationshipType": "requires"},
+    {"name": "CFS_Edge_Hosting", "relationshipType": "requires"}
+  ],
+  "name": "CFS_FieldAssist_Base",
+  "description": "Assistance metavers du technicien terrain - offre de base. Composite statique : slice eMBB XR-Edge + transport entre PE (3 segments : N3 [d1,d2], N2 [d1,d3], N6/N4 [d2,d3]) + hebergement edge. Couvre le demonstrateur minimal 2026 (flux F1 F2 F3 F6) et le scenario complet sans actuation. Le client de slice commande ce service en une fois ; OSOM le decompose (regles LCM).",
+  "version": "1.0",
+  "lifecycleStatus": "Active",
+  "isBundle": true,
+  "serviceSpecCharacteristic": [
+    {"name": "interventionSite", "description": "SDP du site d'intervention (ex. d1)", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "d1"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "expertSite", "description": "SDP du site de l'expert (ex. d3)", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "d3"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "maxTechnicians", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "2"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "availability", "description": "Disponibilite du plan metier (%)", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "99.5"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "timeToFirstUsableTwin", "description": "Objectif applicatif : temps jusqu'au premier jumeau exploitable (s), pour une taille et un niveau de detail definis - remplace la cible 10 Gbit/s", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "30"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "degradationOrder", "description": "SLA : ordre de degradation sous contention", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "F2,F1,F6"}, "isDefault": true, "valueType": "TEXT"}]}
+  ]
+}

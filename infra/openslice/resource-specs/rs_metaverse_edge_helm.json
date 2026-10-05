@@ -1,0 +1,53 @@
+{
+  "name": "MetaverseEdge_HelmChart",
+  "description": "Ressource logique pour CRIDGE : release Helm 'metaverse-edge' (apps/deploy/helm/metaverse-edge) deployee sur le cluster Kubernetes du MEC. Porte la plateforme jumeau, les serveurs de synchronisation, le decodeur de nuages de points, le controleur d'actuation, le stockage objet (MinIO) et coturn.",
+  "version": "1.0",
+  "lifecycleStatus": "Active",
+  "category": "kubernetes-helm",
+  "resourceSpecCharacteristic": [
+    {
+      "name": "helmChart",
+      "valueType": "TEXT",
+      "configurable": false,
+      "resourceSpecCharacteristicValue": [
+        {"value": {"value": "metaverse-edge"}, "isDefault": true, "valueType": "TEXT"}
+      ]
+    },
+    {
+      "name": "targetCluster",
+      "description": "Cluster K8s cible (MEC)",
+      "valueType": "TEXT",
+      "configurable": true,
+      "resourceSpecCharacteristicValue": [
+        {"value": {"value": "mec-cluster"}, "isDefault": true, "valueType": "TEXT"}
+      ]
+    },
+    {
+      "name": "clusterSize",
+      "description": "Dimension du deploiement (small/medium/large)",
+      "valueType": "TEXT",
+      "configurable": true,
+      "resourceSpecCharacteristicValue": [
+        {"value": {"value": "small"}, "isDefault": true, "valueType": "TEXT"}
+      ]
+    },
+    {
+      "name": "objectStorageGb",
+      "description": "Stockage objet S3 (Go) pour /raw /splat /tiles",
+      "valueType": "INTEGER",
+      "configurable": true,
+      "resourceSpecCharacteristicValue": [
+        {"value": {"value": "100"}, "isDefault": true, "valueType": "INTEGER"}
+      ]
+    },
+    {
+      "name": "gpuEnabled",
+      "description": "Active le worker 3DGS GPU (sinon mode mock)",
+      "valueType": "BOOLEAN",
+      "configurable": true,
+      "resourceSpecCharacteristicValue": [
+        {"value": {"value": "false"}, "isDefault": true, "valueType": "BOOLEAN"}
+      ]
+    }
+  ]
+}

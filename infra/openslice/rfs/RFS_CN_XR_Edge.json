@@ -1,0 +1,24 @@
+{
+  "_type": "ResourceFacingServiceSpecification",
+  "_resourceSpecs": ["core_5g_ns", "edge_mec_ns"],
+  "name": "RFS_CN_XR_Edge",
+  "description": "Realisation coeur/edge du slice eMBB XR-Edge : UPF au MEC, DNN EDGE, debits garantis par flux. Reprend les champs de la CFS Provorange 'eMBB (EDGE)' (S-NSSAI, DNN, AMBR). Ressources : NSD core_5g_ns (osm3) + edge_mec_ns (osm2, instance upf-edge).",
+  "version": "1.0",
+  "lifecycleStatus": "Active",
+  "isBundle": false,
+  "serviceSpecCharacteristic": [
+    {"name": "sNSSAI", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "1:657502"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "dNN", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "EDGE"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "uPFPlacement", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "MEC"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "sessionAMBR_UL", "description": "AMBR montant par UE (Mbit/s)", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "150"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "sessionAMBR_DL", "description": "AMBR descendant par UE (Mbit/s)", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "1000"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "fiveQIProfiles", "description": "5QI candidats par flux (annexe A doc 2) : F3=3, F5=80, F6=2, F1/F2=8",
+     "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "F3:5QI3;F5:5QI80;F6:5QI2;F1:5QI8;F2:5QI9"}, "isDefault": true, "valueType": "TEXT"}]}
+  ]
+}

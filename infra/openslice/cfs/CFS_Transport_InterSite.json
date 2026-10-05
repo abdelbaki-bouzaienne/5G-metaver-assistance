@@ -1,0 +1,25 @@
+{
+  "_type": "CustomerFacingServiceSpecification",
+  "_relationships": [
+    {"name": "RFS_Transport_InterSite", "relationshipType": "isRealizedBy"}
+  ],
+  "name": "CFS_Transport_InterSite",
+  "description": "Slice de transport entre deux sites (PE a PE). Instanciee une fois par segment par les composites : N3 sdps=[d1,d2], N2 sdps=[d1,d3], N6/N4 sdps=[d2,d3], avec un profil de KPI propre a chaque segment. Noms alignes sur le modele IETF RFC 9543 (SDP, connectivity), sans pretention de conformite YANG.",
+  "version": "1.0",
+  "lifecycleStatus": "Active",
+  "isBundle": false,
+  "serviceSpecCharacteristic": [
+    {"name": "network_slice_id", "valueType": "TEXT", "configurable": true},
+    {"name": "sdps", "description": "Liste des points de demarcation, serialisee", "valueType": "TEXT", "configurable": true},
+    {"name": "connectivity_type", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "point-to-point"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "latencyOneWayMsP99", "description": "Latence aller simple SDP-a-SDP <= 20 ms (P99)", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "20"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "jitterMs", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "2"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "guaranteedBandwidthMbps", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "1000"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "restorationMs", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "50"}, "isDefault": true, "valueType": "INTEGER"}]}
+  ]
+}

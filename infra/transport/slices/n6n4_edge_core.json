@@ -1,0 +1,18 @@
+{
+  "network_slice_id": "metaverse-n6n4-edge-core",
+  "description": "Segment N6/N4 : PE-EDGE (PE2) <-> PE-CORE (PE3). Video RGB(D), avatars et supervision vers le site central ; N4 SMF<->UPF. TROISIEME SLICE - jamais instancie sur le banc (doc 2, section 7.6) : a creer puis mesurer (iperf3 + RTT entre nf-edge et nf-core).",
+  "sdps": ["d2", "d3"],
+  "connectivity_type": "point-to-point",
+  "tier": "gold",
+  "slo": {
+    "one_way_latency_ms": {"target": 20, "percentile": "P99"},
+    "jitter_ms": 2,
+    "guaranteed_bandwidth_mbps": 1000,
+    "restoration_ms": 50
+  },
+  "qos_mapping": {
+    "AF41": "video F6, avatars F3/F4 vers l'expert",
+    "EF": "supervision actuation F5, signalisation N4",
+    "CS1": "transferts de fond"
+  }
+}

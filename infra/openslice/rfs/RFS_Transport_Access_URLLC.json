@@ -1,0 +1,19 @@
+{
+  "_type": "ResourceFacingServiceSpecification",
+  "_resourceSpecs": ["TransportSlice_NSC"],
+  "name": "RFS_Transport_Access_URLLC",
+  "description": "Segment de transport d'acces dedie a l'option URLLC : slice PE-RAN <-> PE-EDGE (N3) isole du slice eMBB. Liaison bornee entre le gNB et l'UPF dedie.",
+  "version": "1.0",
+  "lifecycleStatus": "Active",
+  "isBundle": false,
+  "serviceSpecCharacteristic": [
+    {"name": "network_slice_id", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "actuation-n3-ran-edge"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "sdps", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "[\"d1\",\"d2\"]"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "connectivity_type", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "point-to-point"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "isolatedFrom", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "metaverse-n3-ran-edge"}, "isDefault": true, "valueType": "TEXT"}]}
+  ]
+}

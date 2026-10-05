@@ -1,0 +1,27 @@
+# Slices de transport entre PE (contrôleur NSC IETF)
+
+Trois segments, chacun un slice de transport entre deux PE, matérialisé sur les PE par :
+instance de service (VRF/EVI `metaverse-slice-<id>`), attachement SDP, politique de chemin
+SR-TE délai minimal, protection TI-LFA (2 chemins disjoints), QoS 5QI → DSCP.
+
+| Slice | sdps | Segment | Rôle | Statut banc |
+|---|---|---|---|---|
+| `metaverse-n3-ran-edge` | [d1, d2] | PE-RAN ⇄ PE-EDGE | N3 : gNB → UPF MEC (F1, F3/F4, boucle actuation) | testé (type urllc2) |
+| `metaverse-n2-ran-core` | [d1, d3] | PE-RAN ⇄ PE-CORE | N2 : gNB → AMF | testé (type embb2) |
+| `metaverse-n6n4-edge-core` | [d2, d3] | PE-EDGE ⇄ PE-CORE | N6/N4 : vidéo, avatars, supervision, SMF↔UPF | **à créer — 3ᵉ slice** (doc 2 §7.6) |
+
+```bash
+cp scripts/env.sh.example scripts/env.sh    # éditer NSC_URL + IP des CE
+./scripts/create_transport_slices.sh        # POST /network-slices ×3
+./scripts/verify_transport_slices.sh        # état + iperf3 + RTT + test d'isolation
+```
+
+Notes :
+- En nominal ces slices sont créés par OpenSlice à l'instanciation de `RFS_Transport_InterSite`
+  (OSOM → contrôleur de ressource générique → HTTP vers le NSC) ; la ressource passe
+  `AVAILABLE` quand le chemin est établi. Les JSON de ce répertoire sont exactement les
+  caractéristiques portées par la RFS (`network_slice_id`, `sdps`, `connectivity_type` + KPI).
+- Les mesures ping sont des RTT CE↔CE : ne pas les confondre avec la latence aller simple
+  SDP-à-SDP du SLA (≤ 20 ms P99 ; ≤ 10 ms sur N3).
+- Les plafonds mesurés sous iperf3 (gold ≈ 95/100, premium ≈ 48/50 sur le banc) sont des
+  plafonds appliqués sans contention concurrente, pas des débits minimaux garantis.

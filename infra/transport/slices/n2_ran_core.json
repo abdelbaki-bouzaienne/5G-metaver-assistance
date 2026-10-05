@@ -1,0 +1,16 @@
+{
+  "network_slice_id": "metaverse-n2-ran-core",
+  "description": "Segment N2 : PE-RAN (PE1) <-> PE-CORE (PE3). Plan de controle gNB -> AMF.",
+  "sdps": ["d1", "d3"],
+  "connectivity_type": "point-to-point",
+  "tier": "premium",
+  "slo": {
+    "one_way_latency_ms": {"target": 20, "percentile": "P99"},
+    "jitter_ms": 2,
+    "guaranteed_bandwidth_mbps": 50,
+    "restoration_ms": 50
+  },
+  "qos_mapping": {
+    "EF": "signalisation NGAP"
+  }
+}

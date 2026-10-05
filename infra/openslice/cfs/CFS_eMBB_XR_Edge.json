@@ -1,0 +1,37 @@
+{
+  "_type": "CustomerFacingServiceSpecification",
+  "_relationships": [
+    {"name": "RFS_RAN_XR_Edge", "relationshipType": "isRealizedBy"},
+    {"name": "RFS_CN_XR_Edge", "relationshipType": "isRealizedBy"},
+    {"name": "RFS_Transport_Access_XR", "relationshipType": "isRealizedBy"}
+  ],
+  "name": "CFS_eMBB_XR_Edge",
+  "description": "Slice eMBB XR-Edge (SST 1) : connectivite 5G faible latence servie depuis la bordure pour l'assistance metavers. UPF au MEC, DNN dedie EDGE, differenciation interne des classes de trafic (la synchronisation d'avatars n'est jamais noyee par la video). Profil asymetrique : montant garanti > descendant garanti pendant capture et assistance ; plafond descendant superieur pour le chargement des assets.",
+  "version": "1.0",
+  "lifecycleStatus": "Active",
+  "isBundle": false,
+  "serviceSpecCharacteristic": [
+    {"name": "sST", "valueType": "INTEGER", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "1"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "sD", "description": "Valeur du banc ; convention decimale ou hexadecimale de l'API a confirmer (champ 24 bits)", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "657502"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "latencyTargetMs", "description": "50 ms, terminal <-> application MEC, P95 (point de mesure et percentile explicites)", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "50"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "ulGuaranteedMbps", "description": "Capture ~100 Mbit/s [Provorange]", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "100"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "ulPeakMbps", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "150"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "dlGuaranteedMbps", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "50"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "dlPeakMbps", "description": "Pointe conditionnelle a la capacite disponible, non garantie", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "1000"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "isolationLevel", "description": "DNN + UPF dedies, radio partagee (couverture publique)", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "LOGICAL"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "dNN", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "EDGE"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "uPFPlacement", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "MEC"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "degradationOrder", "description": "Ordre de degradation sous contention, contractualise dans le SLA : F2 d'abord, puis F1, puis F6 par compression - jamais F3 ni F5", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "F2,F1,F6"}, "isDefault": true, "valueType": "TEXT"}]}
+  ]
+}

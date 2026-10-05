@@ -1,0 +1,15 @@
+{
+  "_type": "ResourceFacingServiceSpecification",
+  "_resourceSpecs": ["ran_xr_edge_ns"],
+  "name": "RFS_RAN_URLLC_Act",
+  "description": "Realisation RAN de l'option URLLC actuation : S-NSSAI 2:791515, priorite radio pour les commandes. Ressource : NSD ran_xr_edge_ns (osm1, gNB multi-slice partage).",
+  "version": "1.0",
+  "lifecycleStatus": "Active",
+  "isBundle": false,
+  "serviceSpecCharacteristic": [
+    {"name": "sNSSAI", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "2:791515"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "radioPriority", "description": "Priorite d'ordonnancement radio des commandes", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "delay-critical"}, "isDefault": true, "valueType": "TEXT"}]}
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "name": "TransportSlice_NSC",
+  "description": "Ressource logique 'transport-slice' : intention transmise par le controleur de ressource generique d'OpenSlice au controleur de transport (NSC IETF, API POST /network-slices), qui configure les PE. Passe AVAILABLE quand le chemin est etabli.",
+  "version": "1.0",
+  "lifecycleStatus": "Active",
+  "category": "transport-slice",
+  "resourceSpecCharacteristic": [
+    {
+      "name": "network_slice_id",
+      "description": "Identifiant du slice de transport",
+      "valueType": "TEXT",
+      "configurable": true
+    },
+    {
+      "name": "sdps",
+      "description": "Liste serialisee des points de demarcation (ex. [\"d1\",\"d2\"])",
+      "valueType": "TEXT",
+      "configurable": true
+    },
+    {
+      "name": "connectivity_type",
+      "description": "Type de connectivite (point-to-point)",
+      "valueType": "TEXT",
+      "configurable": true,
+      "resourceSpecCharacteristicValue": [
+        {"value": {"value": "point-to-point"}, "isDefault": true, "valueType": "TEXT"}
+      ]
+    },
+    {
+      "name": "tier",
+      "description": "Tier de debit applique aux bordures (gold/premium)",
+      "valueType": "TEXT",
+      "configurable": true
+    },
+    {
+      "name": "kpi_profile",
+      "description": "KPI serialise : latence aller simple SDP-a-SDP (P99), gigue, BP garantie, retablissement",
+      "valueType": "TEXT",
+      "configurable": true
+    }
+  ]
+}
