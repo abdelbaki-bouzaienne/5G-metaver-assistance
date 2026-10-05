@@ -1,0 +1,229 @@
+openapi: 3.0.3
+info:
+  title: FieldAssist Metaverse Platform API
+  version: 1.0.0
+  description: >
+    API consolidee de la plateforme edge (vue a travers le gateway, prefixes
+    /twin /ingest /pipeline /session /actuation /signaling).
+    Toutes les geometries sont exprimees dans le repere du jumeau
+    (origine = marqueur image, echelle metrique), jamais en coordonnees ecran.
+    Securite cible : OIDC unique (Bearer JWT) + URL S3 signees a courte duree.
+servers:
+  - url: http://{edgeHost}:8000
+    variables: {edgeHost: {default: 10.0.6.20}}
+security:
+  - oidc: []
+tags:
+  - {name: twin, description: Jumeau structure (plan metier)}
+  - {name: ingest, description: Upload de scans fragmente/reprenable (plan donnees lourdes)}
+  - {name: session, description: Sessions collaboratives, jetons TURN/Relay}
+  - {name: actuation, description: Supervision d'actuation (option URLLC)}
+paths:
+  /twin/sites:
+    post:
+      tags: [twin]
+      summary: Creer un site (NRO / PM / PB) avec son marqueur de relocalisation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/SiteIn'}
+      responses:
+        '201': {description: Site cree, content: {application/json: {schema: {$ref: '#/components/schemas/Site'}}}}
+  /twin/sites/{siteId}/twin-versions:
+    get:
+      tags: [twin]
+      summary: Versions du jumeau (immuables, une par scan)
+      parameters: [{$ref: '#/components/parameters/siteId'}]
+      responses:
+        '200': {description: Liste des versions}
+  /twin/sites/{siteId}/diff:
+    get:
+      tags: [twin]
+      summary: Comparer deux versions (entites ajoutees / supprimees / deplacees)
+      parameters:
+        - {$ref: '#/components/parameters/siteId'}
+        - {name: from, in: query, required: true, schema: {type: string}}
+        - {name: to, in: query, required: true, schema: {type: string}}
+      responses:
+        '200': {description: Differences}
+  /twin/twin-versions:
+    post:
+      tags: [twin]
+      summary: Creer une version du jumeau (appele par gs-pipeline)
+      responses:
+        '201': {description: Version creee}
+  /twin/twin-versions/{versionId}/assets:
+    get:
+      tags: [twin]
+      summary: Assets (splat compresse, tuiles/LOD) en URL signees courte duree
+      parameters:
+        - {$ref: '#/components/parameters/versionId'}
+        - {name: lod, in: query, schema: {type: string, enum: [low, all]}}
+      responses:
+        '200': {description: Liste d'assets}
+  /twin/twin-versions/{versionId}/entities:
+    post:
+      tags: [twin]
+      summary: Marquage manuel (panneau gauche/droit, zone centrale, ports)
+      parameters: [{$ref: '#/components/parameters/versionId'}]
+      requestBody:
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/EntityIn'}
+      responses:
+        '201': {description: Entite creee}
+    get:
+      tags: [twin]
+      summary: Lister les entites (filtre par type)
+      parameters:
+        - {$ref: '#/components/parameters/versionId'}
+        - {name: type, in: query, schema: {type: string}}
+      responses:
+        '200': {description: Entites}
+  /twin/twin-versions/{versionId}/annotations:
+    post:
+      tags: [twin]
+      summary: Annotation (highlight / draw / text / gesture) dans le repere jumeau
+      parameters: [{$ref: '#/components/parameters/versionId'}]
+      responses:
+        '201': {description: Annotation creee}
+  /twin/twin-versions/{versionId}/review:
+    post:
+      tags: [twin]
+      summary: Validation humaine des ecarts (le scan ne met pas a jour le SI seul)
+      parameters: [{$ref: '#/components/parameters/versionId'}]
+      responses:
+        '200': {description: Statut de revue mis a jour}
+  /twin/entities/{entityId}/ports:
+    post:
+      tags: [twin]
+      summary: Declarer un port sur un panneau
+      parameters: [{name: entityId, in: path, required: true, schema: {type: string}}]
+      responses:
+        '201': {description: Port cree}
+  /twin/ports/{portId}:
+    patch:
+      tags: [twin]
+      summary: Associer un port a un client / changer son statut
+      parameters: [{name: portId, in: path, required: true, schema: {type: string}}]
+      responses:
+        '200': {description: Port mis a jour}
+  /twin/clients:
+    post: {tags: [twin], summary: Creer un client, responses: {'201': {description: Client cree}}}
+  /twin/clients/{clientId}/ports:
+    get:
+      tags: [twin]
+      summary: "Conformite client : positions (panneaux gauche+droit) resolues automatiquement"
+      parameters: [{name: clientId, in: path, required: true, schema: {type: string}}]
+      responses:
+        '200': {description: Ports du client avec geometrie des panneaux}
+  /twin/cables:
+    post: {tags: [twin], summary: Creer un cable (port gauche + port droit), responses: {'201': {description: Cable cree}}}
+  /twin/cables/{cableId}:
+    patch:
+      tags: [twin]
+      summary: Enregistrer le cheminement en zone centrale (polyline repere jumeau)
+      parameters: [{name: cableId, in: path, required: true, schema: {type: string}}]
+      responses:
+        '200': {description: Cable mis a jour}
+  /twin/import:
+    post:
+      tags: [twin]
+      summary: Import d'un referentiel existant (clients, liens ports), reconcilie par reference
+      responses:
+        '200': {description: Resume de l'import}
+  /ingest/scans:
+    post:
+      tags: [ingest]
+      summary: Declarer un scan (refuse si marqueur non detecte - echelle/origine requises)
+      responses:
+        '201': {description: Scan cree (status=uploading)}
+        '422': {description: Marqueur non detecte}
+  /ingest/scans/{scanId}/chunks/{n}:
+    put:
+      tags: [ingest]
+      summary: Chunk binaire avec checksum SHA-256 (idempotent, reprise possible)
+      parameters:
+        - {name: scanId, in: path, required: true, schema: {type: string}}
+        - {name: n, in: path, required: true, schema: {type: integer}}
+        - {name: X-Chunk-Sha256, in: header, required: true, schema: {type: string}}
+      responses:
+        '200': {description: Chunk accepte}
+        '422': {description: Checksum invalide - renvoyer ce chunk}
+  /ingest/scans/{scanId}/complete:
+    post:
+      tags: [ingest]
+      summary: Clore l'upload et mettre le job 3DGS en file
+      responses:
+        '200': {description: status=queued}
+        '409': {description: Chunks manquants}
+  /ingest/scans/{scanId}:
+    get:
+      tags: [ingest]
+      summary: Statut (uploading / queued / running / done / failed) + twin_version_id
+      responses:
+        '200': {description: Statut du scan}
+  /session/sessions:
+    post:
+      tags: [session]
+      summary: Ouvrir une session liee a un site et une version ; retourne jetons TURN (+Relay)
+      responses:
+        '201': {description: Session + identifiants TURN ephemeres}
+  /session/sessions/{sessionId}/join:
+    post:
+      tags: [session]
+      summary: Rejoindre (role T/E/A) ; retourne jetons et URL du signaling WebSocket
+      responses:
+        '200': {description: Participation enregistree}
+  /session/sessions/{sessionId}/events:
+    post: {tags: [session], summary: Journaliser un evenement, responses: {'200': {description: OK}}}
+    get: {tags: [session], summary: Journal de session, responses: {'200': {description: Evenements}}}
+  /session/sessions/{sessionId}/report:
+    post:
+      tags: [session]
+      summary: "Phase D : rapport (checklist, captures, annotations) puis fermeture explicite"
+      responses:
+        '200': {description: Session fermee}
+  /actuation/commands:
+    post:
+      tags: [actuation]
+      summary: >
+        Supervision d'actuation (expert -> controleur MEC via N6/N4) ; le controleur
+        pilote l'actuateur par la boucle URLLC. Commandes perimees rejetees.
+      responses:
+        '200': {description: Etat retourne + latence de boucle mesuree}
+        '409': {description: Commande perimee}
+components:
+  parameters:
+    siteId: {name: siteId, in: path, required: true, schema: {type: string}}
+    versionId: {name: versionId, in: path, required: true, schema: {type: string}}
+  securitySchemes:
+    oidc:
+      type: openIdConnect
+      openIdConnectUrl: https://keycloak.example.lan/realms/fieldassist/.well-known/openid-configuration
+  schemas:
+    SiteIn:
+      type: object
+      required: [name, marker_id]
+      properties:
+        name: {type: string}
+        site_type: {type: string, enum: [NRO, PM, PB]}
+        address: {type: string}
+        marker_id: {type: string}
+        marker_size_mm: {type: number, default: 150}
+    Site:
+      allOf:
+        - $ref: '#/components/schemas/SiteIn'
+        - type: object
+          properties: {id: {type: string}}
+    EntityIn:
+      type: object
+      required: [entity_type, name, geometry]
+      properties:
+        entity_type: {type: string, enum: [panel_left, panel_right, central_zone, port, custom]}
+        name: {type: string}
+        geometry:
+          type: object
+          description: "{kind: box|point, center/position: [x,y,z], size: [sx,sy,sz]} - repere jumeau"
+        meta: {type: object}
