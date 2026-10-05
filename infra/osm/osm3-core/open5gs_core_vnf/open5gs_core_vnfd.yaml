@@ -1,0 +1,76 @@
+vnfd:
+  id: open5gs_core_vnf
+  product-name: open5gs_core_vnf
+  description: >
+    Coeur 5G Open5GS - plan de controle (site central d3 / PE-CORE) :
+    NRF, SCP, AMF, SMF, AUSF, UDM, UDR, PCF, NSSF, BSF + WebUI.
+    Les UPF sont au MEC (edge_mec_ns, osm2). Deux S-NSSAI : 1:657502 (DNN EDGE)
+    et 2:791515 (DNN actuation). Alternative KNF : open5gs_core_knf (cluster Sylva).
+  provider: fieldassist-poc
+  version: '1.0'
+  mgmt-cp: mgmt-ext
+  virtual-compute-desc:
+    - id: core-compute
+      virtual-cpu:
+        num-virtual-cpu: 4
+      virtual-memory:
+        size: 8.0
+  virtual-storage-desc:
+    - id: core-storage
+      size-of-storage: 40
+  sw-image-desc:
+    - id: ubuntu-22.04
+      name: ubuntu-22.04
+      image: ubuntu-22.04
+  vdu:
+    - id: core-vdu
+      name: core-vdu
+      cloud-init-file: core-init.cfg
+      sw-image-desc: ubuntu-22.04
+      virtual-compute-desc: core-compute
+      virtual-storage-desc:
+        - core-storage
+      int-cpd:
+        - id: mgmt-int
+          virtual-network-interface-requirement:
+            - name: ens3
+              position: 1
+              virtual-interface:
+                type: PARAVIRT
+        - id: n2-int
+          virtual-network-interface-requirement:
+            - name: ens4
+              position: 2
+              virtual-interface:
+                type: PARAVIRT
+        - id: n4-int
+          virtual-network-interface-requirement:
+            - name: ens5
+              position: 3
+              virtual-interface:
+                type: PARAVIRT
+  ext-cpd:
+    - id: mgmt-ext
+      int-cpd:
+        vdu-id: core-vdu
+        cpd: mgmt-int
+    - id: n2-ext
+      int-cpd:
+        vdu-id: core-vdu
+        cpd: n2-int
+    - id: n4-ext
+      int-cpd:
+        vdu-id: core-vdu
+        cpd: n4-int
+  df:
+    - id: default-df
+      vdu-profile:
+        - id: core-vdu
+          min-number-of-instances: 1
+          max-number-of-instances: 1
+      instantiation-level:
+        - id: default-instantiation-level
+          vdu-level:
+            - vdu-id: core-vdu
+              number-of-instances: 1
+      default-instantiation-level: default-instantiation-level

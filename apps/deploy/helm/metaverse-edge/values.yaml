@@ -1,0 +1,67 @@
+# Projections depuis la CFS_Edge_Hosting (regles LCM R4) :
+#   clusterSize -> profile ; objectStorageGb -> minio.storageGb ; gpuEnabled -> gsPipeline.gpuEnabled
+profile: small            # small | medium | large
+publicHost: 10.0.6.20     # IP N6 exposee (TURN, gateway)
+turnSecret: changeme-turn-secret
+
+image:
+  registry: registry.example.lan/fieldassist   # construire/pousser les images apps/*
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+gsPipeline:
+  gpuEnabled: false
+  mode: mock              # mock | gpu
+  trainCmd: ""
+
+minio:
+  storageGb: 100
+  accessKey: minioadmin
+  secretKey: minioadmin
+
+postgres:
+  user: twin
+  password: twin
+  db: twin
+  storageGb: 10
+
+gateway:
+  serviceType: LoadBalancer
+  port: 8000
+
+# Micro-services applicatifs (boucle de templating)
+apps:
+  twin-service:
+    port: 8001
+    env:
+      DATABASE_URL: postgresql://twin:twin@postgres:5432/twin
+  scan-ingest:
+    port: 8002
+    env:
+      REDIS_URL: redis://redis:6379/0
+      S3_ENDPOINT: http://minio:9000
+      S3_BUCKET: scans
+  gs-pipeline:
+    port: 8003
+    env:
+      REDIS_URL: redis://redis:6379/0
+      TWIN_URL: http://twin-service:8001
+      S3_ENDPOINT: http://minio:9000
+      S3_BUCKET: scans
+  session-service:
+    port: 8004
+    env:
+      REDIS_URL: redis://redis:6379/0
+  signaling:
+    port: 8005
+    env:
+      REDIS_URL: redis://redis:6379/0
+  actuation-controller:
+    port: 8006
+    env:
+      COMMAND_EXPIRY_MS: "500"
+
+resources:
+  small:   {requests: {cpu: 100m, memory: 128Mi}, limits: {cpu: 500m, memory: 512Mi}}
+  medium:  {requests: {cpu: 250m, memory: 256Mi}, limits: {cpu: "1",  memory: 1Gi}}
+  large:   {requests: {cpu: 500m, memory: 512Mi}, limits: {cpu: "2",  memory: 2Gi}}

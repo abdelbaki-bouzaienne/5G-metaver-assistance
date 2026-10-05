@@ -1,0 +1,103 @@
+name: metaverse-edge
+
+services:
+  gateway:
+    image: nginx:alpine
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on: [twin-service, scan-ingest, gs-pipeline, session-service, signaling, actuation-controller]
+
+  twin-service:
+    build: ./twin-service
+    environment:
+      DATABASE_URL: postgresql://twin:twin@postgres:5432/twin
+    depends_on:
+      postgres: {condition: service_healthy}
+
+  scan-ingest:
+    build: ./scan-ingest
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-minioadmin}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-minioadmin}
+      S3_BUCKET: scans
+    depends_on: [redis, minio]
+
+  gs-pipeline:
+    build: ./gs-pipeline
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      TWIN_URL: http://twin-service:8001
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-minioadmin}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-minioadmin}
+      S3_BUCKET: scans
+      GS_MODE: ${GS_MODE:-mock}        # gpu si noeud GPU au MEC (+ GS_TRAIN_CMD)
+    depends_on: [redis, minio, twin-service]
+
+  session-service:
+    build: ./session-service
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      TURN_SECRET: ${TURN_SECRET:-changeme-turn-secret}
+      TURN_URIS: turn:${PUBLIC_HOST:-localhost}:3478?transport=udp,turns:${PUBLIC_HOST:-localhost}:443?transport=tcp
+      UNITY_RELAY_ENABLED: ${UNITY_RELAY_ENABLED:-false}
+    depends_on: [redis]
+
+  signaling:
+    build: ./signaling
+    environment:
+      REDIS_URL: redis://redis:6379/0
+    depends_on: [redis]
+
+  actuation-controller:
+    build: ./actuation-controller
+    environment:
+      ACTUATOR_GATEWAY: ${ACTUATOR_GATEWAY:-}   # vide = actuateur simule
+      COMMAND_EXPIRY_MS: "500"
+
+  coturn:
+    image: coturn/coturn:4.6
+    network_mode: host                  # UDP 3478 + TCP 443 + plage de relais
+    volumes:
+      - ./coturn/turnserver.conf:/etc/coturn/turnserver.conf:ro
+    command: ["-c", "/etc/coturn/turnserver.conf", "--static-auth-secret", "${TURN_SECRET:-changeme-turn-secret}"]
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: twin
+      POSTGRES_PASSWORD: twin
+      POSTGRES_DB: twin
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U twin"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redisdata:/data
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-minioadmin}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - miniodata:/data
+
+volumes:
+  pgdata:
+  redisdata:
+  miniodata:

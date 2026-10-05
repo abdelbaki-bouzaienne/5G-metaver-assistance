@@ -1,0 +1,47 @@
+# Parametres d'instanciation du NS edge_mec_ns (osm2 / VIM2)
+additionalParamsForVnf:
+  - member-vnf-index: upf-edge
+    additionalParams:
+      dnn: "EDGE"
+      ue_subnet: "10.45.0.0/16"
+      ue_gateway: "10.45.0.1"
+      n3_ip: "10.0.3.10"
+      n4_ip: "10.0.4.10"
+  - member-vnf-index: upf-act
+    additionalParams:
+      dnn: "actuation"
+      ue_subnet: "10.46.0.0/16"
+      ue_gateway: "10.46.0.1"
+      n3_ip: "10.0.3.11"
+      n4_ip: "10.0.4.11"
+  - member-vnf-index: edge-platform
+    additionalParams:
+      repo_url: "https://example.com/votre-org/5g-metaver-assistance.git"  # URL de CE depot
+      public_ip: "10.0.6.20"
+vld:
+  - name: mgmtnet
+    vim-network-name: internal5G
+  - name: n3net
+    vim-network-name: 5g-inter-vm   # dedier n3net quand cree dans le VIM
+    vnfd-connection-point-ref:
+      - member-vnf-index-ref: upf-edge
+        vnfd-connection-point-ref: n3-ext
+        ip-address: 10.0.3.10
+      - member-vnf-index-ref: upf-act
+        vnfd-connection-point-ref: n3-ext
+        ip-address: 10.0.3.11
+  - name: n4net
+    vim-network-name: 5g-inter-vm   # dedier n4net quand cree dans le VIM
+    vnfd-connection-point-ref:
+      - member-vnf-index-ref: upf-edge
+        vnfd-connection-point-ref: n4-ext
+        ip-address: 10.0.4.10
+      - member-vnf-index-ref: upf-act
+        vnfd-connection-point-ref: n4-ext
+        ip-address: 10.0.4.11
+  - name: n6net
+    vim-network-name: 5g-inter-vm   # dedier n6net quand cree dans le VIM
+    vnfd-connection-point-ref:
+      - member-vnf-index-ref: edge-platform
+        vnfd-connection-point-ref: n6-ext
+        ip-address: 10.0.6.20

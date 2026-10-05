@@ -1,0 +1,29 @@
+{
+  "_type": "CustomerFacingServiceSpecification",
+  "_relationships": [
+    {"name": "RFS_RAN_URLLC_Act", "relationshipType": "isRealizedBy"},
+    {"name": "RFS_CN_URLLC_Act", "relationshipType": "isRealizedBy"},
+    {"name": "RFS_Transport_Access_URLLC", "relationshipType": "isRealizedBy"}
+  ],
+  "name": "CFS_URLLC_Actuation",
+  "description": "Option URLLC (SST 2) : slice d'isolation pour la boucle de controle contrôleur MEC -> actuateur (seul flux a consequence physique). Alternative minimale : flux QoS delay-critical GBR dans le slice eMBB. La supervision expert -> MEC reste dans l'eMBB (messagerie, pas controle).",
+  "version": "1.0",
+  "lifecycleStatus": "Active",
+  "isBundle": false,
+  "serviceSpecCharacteristic": [
+    {"name": "sST", "valueType": "INTEGER", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "2"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "sD", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "791515"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "loopLatencyMs", "description": "Latence de la boucle contrôleur MEC <-> passerelle actuateur, percentile a definir selon l'actuateur reel", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "20"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "reliabilityMetric", "description": "A definir : taux de livraison dans le delai, ou disponibilite (aucune valeur ferme retenue ; les 99,999% de la v1 etaient une hypothese non sourcee)", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "in-time-delivery-rate"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "isolationLevel", "description": "UPF dedie ; AMF/SMF selon besoin", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "DEDICATED"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "dNN", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "actuation"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "commandExpiryMs", "description": "Expiration des commandes (comportement sur en cas de perte : securite locale hors 5G)", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "500"}, "isDefault": true, "valueType": "INTEGER"}]}
+  ]
+}

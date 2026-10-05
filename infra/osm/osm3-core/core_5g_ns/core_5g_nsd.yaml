@@ -1,0 +1,34 @@
+nsd:
+  nsd:
+    - id: core_5g_ns
+      name: core_5g_ns
+      description: >
+        NS du site central (d3) : coeur 5G Open5GS (plan de controle). N2 vers le gNB
+        (segment PE-RAN<->PE-CORE), N4 vers les UPF du MEC (segment PE-EDGE<->PE-CORE).
+      designer: fieldassist-poc
+      version: '1.0'
+      vnfd-id:
+        - open5gs_core_vnf
+      virtual-link-desc:
+        - id: mgmtnet
+          mgmt-network: true
+        - id: n2net
+        - id: n4net
+      df:
+        - id: default-df
+          vnf-profile:
+            - id: core
+              vnfd-id: open5gs_core_vnf
+              virtual-link-connectivity:
+                - virtual-link-profile-id: mgmtnet
+                  constituent-cpd-id:
+                    - constituent-base-element-id: core
+                      constituent-cpd-id: mgmt-ext
+                - virtual-link-profile-id: n2net
+                  constituent-cpd-id:
+                    - constituent-base-element-id: core
+                      constituent-cpd-id: n2-ext
+                - virtual-link-profile-id: n4net
+                  constituent-cpd-id:
+                    - constituent-base-element-id: core
+                      constituent-cpd-id: n4-ext

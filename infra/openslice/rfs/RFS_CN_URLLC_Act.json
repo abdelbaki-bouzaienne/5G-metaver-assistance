@@ -1,0 +1,19 @@
+{
+  "_type": "ResourceFacingServiceSpecification",
+  "_resourceSpecs": ["edge_mec_ns"],
+  "name": "RFS_CN_URLLC_Act",
+  "description": "Realisation coeur de l'option URLLC : UPF dedie au MEC (instance upf-act du NS edge_mec_ns), DNN actuation. Plan utilisateur isole pour la boucle de controle contrôleur MEC -> actuateur.",
+  "version": "1.0",
+  "lifecycleStatus": "Active",
+  "isBundle": false,
+  "serviceSpecCharacteristic": [
+    {"name": "sNSSAI", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "2:791515"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "dNN", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "actuation"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "dedicatedUPF", "valueType": "BOOLEAN", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "true"}, "isDefault": true, "valueType": "BOOLEAN"}]},
+    {"name": "fiveQIProfile", "description": "5QI candidat boucle de controle (82/83, annexe A)", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "5QI82"}, "isDefault": true, "valueType": "TEXT"}]}
+  ]
+}

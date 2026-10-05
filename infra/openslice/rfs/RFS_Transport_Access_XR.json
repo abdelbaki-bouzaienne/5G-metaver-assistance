@@ -1,0 +1,19 @@
+{
+  "_type": "ResourceFacingServiceSpecification",
+  "_resourceSpecs": ["TransportSlice_NSC"],
+  "name": "RFS_Transport_Access_XR",
+  "description": "Segment de transport d'acces du slice eMBB XR-Edge : PE-RAN <-> PE-EDGE (N3), latence <= 10 ms. Sur le banc : chemin PE1 <-> PE2.",
+  "version": "1.0",
+  "lifecycleStatus": "Active",
+  "isBundle": false,
+  "serviceSpecCharacteristic": [
+    {"name": "network_slice_id", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "metaverse-n3-ran-edge"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "sdps", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "[\"d1\",\"d2\"]"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "connectivity_type", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "point-to-point"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "latencyTargetMs", "description": "Latence aller simple SDP-a-SDP, P99", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "10"}, "isDefault": true, "valueType": "INTEGER"}]}
+  ]
+}

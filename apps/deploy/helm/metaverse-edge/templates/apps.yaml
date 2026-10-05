@@ -1,0 +1,65 @@
+{{- $root := . -}}
+{{- range $name, $svc := .Values.apps }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  labels: {app: {{ $name }}, release: {{ $root.Release.Name }}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: {{ $name }}}
+  template:
+    metadata:
+      labels: {app: {{ $name }}, release: {{ $root.Release.Name }}}
+    spec:
+      containers:
+        - name: {{ $name }}
+          image: "{{ $root.Values.image.registry }}/{{ $name }}:{{ $root.Values.image.tag }}"
+          imagePullPolicy: {{ $root.Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ $svc.port }}
+          env:
+            {{- range $k, $v := $svc.env }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+            {{- end }}
+            - name: S3_ACCESS_KEY
+              value: {{ $root.Values.minio.accessKey | quote }}
+            - name: S3_SECRET_KEY
+              value: {{ $root.Values.minio.secretKey | quote }}
+            {{- if eq $name "session-service" }}
+            - name: TURN_SECRET
+              value: {{ $root.Values.turnSecret | quote }}
+            - name: TURN_URIS
+              value: "turn:{{ $root.Values.publicHost }}:3478?transport=udp,turns:{{ $root.Values.publicHost }}:443?transport=tcp"
+            {{- end }}
+            {{- if eq $name "gs-pipeline" }}
+            - name: GS_MODE
+              value: {{ ternary "gpu" $root.Values.gsPipeline.mode $root.Values.gsPipeline.gpuEnabled | quote }}
+            - name: GS_TRAIN_CMD
+              value: {{ $root.Values.gsPipeline.trainCmd | quote }}
+            {{- end }}
+          readinessProbe:
+            httpGet: {path: /healthz, port: {{ $svc.port }}}
+            initialDelaySeconds: 5
+          resources: {{- toYaml (index $root.Values.resources $root.Values.profile) | nindent 12 }}
+          {{- if and (eq $name "gs-pipeline") $root.Values.gsPipeline.gpuEnabled }}
+          # Noeud GPU du MEC pour l'entrainement 3DGS
+          {{- end }}
+      {{- if and (eq $name "gs-pipeline") $root.Values.gsPipeline.gpuEnabled }}
+      nodeSelector:
+        accelerator: gpu
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}
+spec:
+  selector: {app: {{ $name }}}
+  ports:
+    - port: {{ $svc.port }}
+      targetPort: {{ $svc.port }}
+{{- end }}

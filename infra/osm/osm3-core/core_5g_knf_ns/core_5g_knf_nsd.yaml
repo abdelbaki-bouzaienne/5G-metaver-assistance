@@ -1,0 +1,22 @@
+nsd:
+  nsd:
+    - id: core_5g_knf_ns
+      name: core_5g_knf_ns
+      description: NS alternative KNF - coeur 5G Open5GS en Helm sur Sylva wc-5g-core2 (d3)
+      designer: fieldassist-poc
+      version: '1.0'
+      vnfd-id:
+        - open5gs_core_knf
+      virtual-link-desc:
+        - id: mgmtnet
+          mgmt-network: true
+      df:
+        - id: default-df
+          vnf-profile:
+            - id: core-knf
+              vnfd-id: open5gs_core_knf
+              virtual-link-connectivity:
+                - virtual-link-profile-id: mgmtnet
+                  constituent-cpd-id:
+                    - constituent-base-element-id: core-knf
+                      constituent-cpd-id: mgmt-ext

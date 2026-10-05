@@ -1,0 +1,12 @@
+{
+  "_comment": "TWIN_INVENTORY=import - referentiel existant (infrastructure-inventory). Import : curl -X POST http://<edge>:8000/twin/import -H 'Content-Type: application/json' --data @infrastructure-inventory.json  (apres avoir cree les ports par marquage, la reconciliation se fait par port_label)",
+  "clients": [
+    {"reference": "CL-0042", "name": "Client 42"},
+    {"reference": "CL-0043", "name": "Client 43"}
+  ],
+  "port_links": [
+    {"port_label": "P12", "client_reference": "CL-0042"},
+    {"port_label": "P13", "client_reference": "CL-0042"},
+    {"port_label": "P14", "client_reference": "CL-0043"}
+  ]
+}

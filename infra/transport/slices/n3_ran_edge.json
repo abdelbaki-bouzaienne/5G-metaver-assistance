@@ -1,0 +1,19 @@
+{
+  "network_slice_id": "metaverse-n3-ran-edge",
+  "description": "Segment N3 : PE-RAN (PE1) <-> PE-EDGE (PE2). gNB -> UPF au MEC : capture 3D, synchronisation, boucle locale d'actuation si retenue.",
+  "sdps": ["d1", "d2"],
+  "connectivity_type": "point-to-point",
+  "tier": "gold",
+  "slo": {
+    "one_way_latency_ms": {"target": 10, "percentile": "P99"},
+    "jitter_ms": 2,
+    "guaranteed_bandwidth_mbps": 1000,
+    "restoration_ms": 50
+  },
+  "qos_mapping": {
+    "AF41": "XR (avatars F3/F4, video F6)",
+    "AF31": "capture 3D (F1)",
+    "CS1": "chargement jumeau (F2, fond)",
+    "EF": "supervision actuation (F5)"
+  }
+}

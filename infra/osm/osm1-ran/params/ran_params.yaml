@@ -1,0 +1,25 @@
+# Parametres d'instanciation du NS ran_xr_edge_ns (osm1 / VIM1)
+# osm ns-create --ns_name ranxr --nsd_name ran_xr_edge_ns --vim_account VIM1 --config_file ran_params.yaml
+additionalParamsForVnf:
+  - member-vnf-index: gnb
+    additionalParams:
+      mcc: "001"
+      mnc: "01"
+      amf_ip: "10.0.2.10"     # IP N2 de l'AMF (site central, via slice transport N2)
+      n2_ip: "10.0.2.21"      # IP du gNB sur n2net
+      n3_ip: "10.0.3.21"      # IP du gNB sur n3net
+vld:
+  - name: mgmtnet
+    vim-network-name: internal5G
+  - name: n2net
+    vim-network-name: 5g-inter-vm   # dedier n2net quand cree dans le VIM
+    vnfd-connection-point-ref:
+      - member-vnf-index-ref: gnb
+        vnfd-connection-point-ref: n2-ext
+        ip-address: 10.0.2.21
+  - name: n3net
+    vim-network-name: 5g-inter-vm   # dedier n3net quand cree dans le VIM
+    vnfd-connection-point-ref:
+      - member-vnf-index-ref: gnb
+        vnfd-connection-point-ref: n3-ext
+        ip-address: 10.0.3.21

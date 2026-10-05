@@ -1,0 +1,71 @@
+nsd:
+  nsd:
+    - id: edge_mec_ns
+      name: edge_mec_ns
+      description: >
+        NS du MEC (d2) : UPF EDGE (slice eMBB XR-Edge), UPF actuation (option URLLC,
+        isolation DEDICATED) et plateforme edge. N3 vers PE-RAN, N4 vers le SMF
+        (PE-CORE), N6 local vers la plateforme edge puis PE-CORE (expert).
+      designer: fieldassist-poc
+      version: '1.0'
+      vnfd-id:
+        - open5gs_upf_vnf
+        - edge_platform_vnf
+      virtual-link-desc:
+        - id: mgmtnet
+          mgmt-network: true
+        - id: n3net
+        - id: n4net
+        - id: n6net
+      df:
+        - id: default-df
+          vnf-profile:
+            - id: upf-edge
+              vnfd-id: open5gs_upf_vnf
+              virtual-link-connectivity:
+                - virtual-link-profile-id: mgmtnet
+                  constituent-cpd-id:
+                    - constituent-base-element-id: upf-edge
+                      constituent-cpd-id: mgmt-ext
+                - virtual-link-profile-id: n3net
+                  constituent-cpd-id:
+                    - constituent-base-element-id: upf-edge
+                      constituent-cpd-id: n3-ext
+                - virtual-link-profile-id: n4net
+                  constituent-cpd-id:
+                    - constituent-base-element-id: upf-edge
+                      constituent-cpd-id: n4-ext
+                - virtual-link-profile-id: n6net
+                  constituent-cpd-id:
+                    - constituent-base-element-id: upf-edge
+                      constituent-cpd-id: n6-ext
+            - id: upf-act
+              vnfd-id: open5gs_upf_vnf
+              virtual-link-connectivity:
+                - virtual-link-profile-id: mgmtnet
+                  constituent-cpd-id:
+                    - constituent-base-element-id: upf-act
+                      constituent-cpd-id: mgmt-ext
+                - virtual-link-profile-id: n3net
+                  constituent-cpd-id:
+                    - constituent-base-element-id: upf-act
+                      constituent-cpd-id: n3-ext
+                - virtual-link-profile-id: n4net
+                  constituent-cpd-id:
+                    - constituent-base-element-id: upf-act
+                      constituent-cpd-id: n4-ext
+                - virtual-link-profile-id: n6net
+                  constituent-cpd-id:
+                    - constituent-base-element-id: upf-act
+                      constituent-cpd-id: n6-ext
+            - id: edge-platform
+              vnfd-id: edge_platform_vnf
+              virtual-link-connectivity:
+                - virtual-link-profile-id: mgmtnet
+                  constituent-cpd-id:
+                    - constituent-base-element-id: edge-platform
+                      constituent-cpd-id: mgmt-ext
+                - virtual-link-profile-id: n6net
+                  constituent-cpd-id:
+                    - constituent-base-element-id: edge-platform
+                      constituent-cpd-id: n6-ext

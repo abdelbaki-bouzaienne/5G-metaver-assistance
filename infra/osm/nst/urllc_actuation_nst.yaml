@@ -1,0 +1,23 @@
+# Network Slice Template OSM (optionnel) - slice URLLC actuation (SST 2, SD 791515)
+# Isolation DEDICATED : UPF dedie (upf-act du NS edge_mec_ns) ; AMF/SMF partages.
+nst:
+  - id: urllc_actuation_nst
+    name: urllc_actuation_nst
+    SNSSAI-identifier:
+      slice-service-type: URLLC
+      slice-differentiator: 791515
+    quality-of-service:
+      id: 82
+    netslice-subnet:
+      - id: ran-subnet
+        is-shared-nss: true
+        description: Sous-reseau RAN partage (gNB multi-slice, osm1)
+        nsd-ref: ran_xr_edge_ns
+      - id: edge-subnet
+        is-shared-nss: true
+        description: Sous-reseau MEC (UPF actuation dedie, osm2)
+        nsd-ref: edge_mec_ns
+      - id: core-subnet
+        is-shared-nss: true
+        description: Sous-reseau coeur partage (osm3)
+        nsd-ref: core_5g_ns

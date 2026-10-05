@@ -1,0 +1,10 @@
+apiVersion: v2
+name: metaverse-edge
+description: >
+  Plateforme edge du PoC FieldAssist (MEC) : twin-service, scan-ingest, gs-pipeline,
+  session-service, signaling, actuation-controller, gateway, PostgreSQL, Redis, MinIO,
+  coturn. Deployee par le controleur Kubernetes d'OpenSlice (CRIDGE) a l'instanciation
+  de RFS_Cloud_EdgePlatform (CFS_Edge_Hosting).
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

@@ -1,0 +1,34 @@
+nsd:
+  nsd:
+    - id: ran_xr_edge_ns
+      name: ran_xr_edge_ns
+      description: >
+        NS du site d'intervention (d1) : gNB UERANSIM rattache aux reseaux N2 (vers AMF via
+        PE-RAN<->PE-CORE) et N3 (vers UPF MEC via PE-RAN<->PE-EDGE).
+      designer: fieldassist-poc
+      version: '1.0'
+      vnfd-id:
+        - ueransim_gnb_vnf
+      virtual-link-desc:
+        - id: mgmtnet
+          mgmt-network: true
+        - id: n2net
+        - id: n3net
+      df:
+        - id: default-df
+          vnf-profile:
+            - id: gnb
+              vnfd-id: ueransim_gnb_vnf
+              virtual-link-connectivity:
+                - virtual-link-profile-id: mgmtnet
+                  constituent-cpd-id:
+                    - constituent-base-element-id: gnb
+                      constituent-cpd-id: mgmt-ext
+                - virtual-link-profile-id: n2net
+                  constituent-cpd-id:
+                    - constituent-base-element-id: gnb
+                      constituent-cpd-id: n2-ext
+                - virtual-link-profile-id: n3net
+                  constituent-cpd-id:
+                    - constituent-base-element-id: gnb
+                      constituent-cpd-id: n3-ext

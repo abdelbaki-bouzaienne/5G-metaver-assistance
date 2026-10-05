@@ -1,0 +1,29 @@
+{
+  "_type": "CustomerFacingServiceSpecification",
+  "_relationships": [
+    {"name": "CFS_eMBB_XR_Edge", "relationshipType": "bundled"},
+    {"name": "CFS_URLLC_Actuation", "relationshipType": "bundled"},
+    {"name": "CFS_Transport_InterSite", "relationshipType": "requires"},
+    {"name": "CFS_Edge_Hosting", "relationshipType": "requires"}
+  ],
+  "name": "CFS_FieldAssist_WithActuation",
+  "description": "Assistance metavers du technicien terrain - avec option actuation. Meme base que CFS_FieldAssist_Base (eMBB XR-Edge + 3 segments de transport + hebergement edge) plus le slice URLLC dedie a la boucle de controle contrôleur MEC -> actuateur. Composite statique reutilisant les memes specifications atomiques ; la composite a constituant optionnel reste la cible apres validation du mecanisme conditionnel LCM sur l'instance installee.",
+  "version": "1.0",
+  "lifecycleStatus": "Active",
+  "isBundle": true,
+  "serviceSpecCharacteristic": [
+    {"name": "interventionSite", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "d1"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "expertSite", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "d3"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "maxTechnicians", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "2"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "availability", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "99.5"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "timeToFirstUsableTwin", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "30"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "actuatorGateway", "description": "Adresse de la passerelle actuateur sur le site d'intervention", "valueType": "TEXT", "configurable": true},
+    {"name": "degradationOrder", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "F2,F1,F6"}, "isDefault": true, "valueType": "TEXT"}]}
+  ]
+}

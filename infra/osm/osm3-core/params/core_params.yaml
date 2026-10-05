@@ -1,0 +1,25 @@
+# Parametres d'instanciation du NS core_5g_ns (osm3 / VIM3)
+additionalParamsForVnf:
+  - member-vnf-index: core
+    additionalParams:
+      mcc: "001"
+      mnc: "01"
+      n2_ip: "10.0.2.10"
+      n4_ip: "10.0.4.30"
+      upf_edge_n4: "10.0.4.10"   # UPF EDGE au MEC (edge_params.yaml)
+      upf_act_n4: "10.0.4.11"    # UPF actuation au MEC
+vld:
+  - name: mgmtnet
+    vim-network-name: internal5G
+  - name: n2net
+    vim-network-name: 5g-inter-vm   # dedier n2net quand cree dans le VIM
+    vnfd-connection-point-ref:
+      - member-vnf-index-ref: core
+        vnfd-connection-point-ref: n2-ext
+        ip-address: 10.0.2.10
+  - name: n4net
+    vim-network-name: 5g-inter-vm   # dedier n4net quand cree dans le VIM
+    vnfd-connection-point-ref:
+      - member-vnf-index-ref: core
+        vnfd-connection-point-ref: n4-ext
+        ip-address: 10.0.4.30

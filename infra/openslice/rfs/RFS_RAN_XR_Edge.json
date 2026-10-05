@@ -1,0 +1,16 @@
+{
+  "_type": "ResourceFacingServiceSpecification",
+  "_resourceSpecs": ["ran_xr_edge_ns"],
+  "name": "RFS_RAN_XR_Edge",
+  "description": "Realisation RAN du slice eMBB XR-Edge : reservation radio sur les cellules couvrant le site d'intervention, S-NSSAI 1:657502. Ressource : NSD ran_xr_edge_ns (osm1).",
+  "version": "1.0",
+  "lifecycleStatus": "Active",
+  "isBundle": false,
+  "serviceSpecCharacteristic": [
+    {"name": "sNSSAI", "valueType": "TEXT", "configurable": false,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "1:657502"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "cells", "description": "Cellules du site d'intervention", "valueType": "TEXT", "configurable": true},
+    {"name": "radioResourceShare", "description": "Part de ressources radio reservee (%)", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "30"}, "isDefault": true, "valueType": "INTEGER"}]}
+  ]
+}

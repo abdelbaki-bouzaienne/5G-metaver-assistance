@@ -1,0 +1,19 @@
+{
+  "_type": "ResourceFacingServiceSpecification",
+  "_resourceSpecs": ["MetaverseEdge_HelmChart"],
+  "name": "RFS_Cloud_EdgePlatform",
+  "description": "Deploiement Kubernetes de la plateforme edge (jumeau numerique, serveurs de synchronisation, decodeur de nuages de points, controleur d'actuation, stockage objet), realise par le controleur Kubernetes d'OpenSlice (CRIDGE) via le chart Helm metaverse-edge, avec placement sur le cluster du MEC.",
+  "version": "1.0",
+  "lifecycleStatus": "Active",
+  "isBundle": false,
+  "serviceSpecCharacteristic": [
+    {"name": "targetCluster", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "mec-cluster"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "clusterSize", "valueType": "TEXT", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "small"}, "isDefault": true, "valueType": "TEXT"}]},
+    {"name": "objectStorageGb", "valueType": "INTEGER", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "100"}, "isDefault": true, "valueType": "INTEGER"}]},
+    {"name": "gpuEnabled", "valueType": "BOOLEAN", "configurable": true,
+     "serviceSpecCharacteristicValue": [{"value": {"value": "false"}, "isDefault": true, "valueType": "BOOLEAN"}]}
+  ]
+}

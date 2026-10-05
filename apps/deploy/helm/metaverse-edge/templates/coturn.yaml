@@ -1,0 +1,23 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: coturn}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: coturn}}
+  template:
+    metadata: {labels: {app: coturn}}
+    spec:
+      hostNetwork: true   # UDP 3478, TCP 443 et plage de relais exposes directement
+      containers:
+        - name: coturn
+          image: coturn/coturn:4.6
+          args:
+            - "--use-auth-secret"
+            - "--static-auth-secret={{ .Values.turnSecret }}"
+            - "--realm=fieldassist.local"
+            - "--listening-port=3478"
+            - "--tls-listening-port=443"
+            - "--min-port=49152"
+            - "--max-port=49300"
+            - "--fingerprint"
